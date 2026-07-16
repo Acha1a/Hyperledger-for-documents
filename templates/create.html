@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Asset - Blockchain Demo</title>
+    <style>
+        body { font-family: Arial; margin: 40px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; }
+        input, button { padding: 10px; margin: 5px; width: 200px; }
+        button { background: #27ae60; color: white; border: none; cursor: pointer; }
+        .result { margin-top: 20px; padding: 10px; border-radius: 5px; }
+        .success { background: #d5f5e3; color: #27ae60; }
+        .error { background: #fadbd8; color: #e74c3c; }
+        a { color: #3498db; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>➕ Create New Asset</h1>
+        <a href="/">← Back to Home</a>
+        <a href="/assets">📋 View Assets</a>
+        <form id="createForm">
+            <div><input type="text" id="id" placeholder="Asset ID" required></div>
+            <div><input type="text" id="color" placeholder="Color" required></div>
+            <div><input type="number" id="size" placeholder="Size" required></div>
+            <div><input type="text" id="owner" placeholder="Owner" required></div>
+            <div><input type="number" id="value" placeholder="Value" required></div>
+            <button type="submit">Create Asset on Blockchain</button>
+        </form>
+        <div id="result" style="display:none;"></div>
+    </div>
+    <script>
+        document.getElementById('createForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new URLSearchParams();
+            formData.append('id', document.getElementById('id').value);
+            formData.append('color', document.getElementById('color').value);
+            formData.append('size', document.getElementById('size').value);
+            formData.append('owner', document.getElementById('owner').value);
+            formData.append('value', document.getElementById('value').value);
+            
+            const response = await fetch('/api/assets', { method: 'POST', body: formData });
+            const result = await response.json();
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            
+            if (response.ok) {
+                resultDiv.className = 'result success';
+                resultDiv.innerHTML = '✅ ' + result.message;
+                document.getElementById('createForm').reset();
+            } else {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = '❌ Error: ' + result.error;
+            }
+        });
+    </script>
+</body>
+</html>
